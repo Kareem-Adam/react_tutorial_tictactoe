@@ -2,18 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-class Square extends React.Component {
 
-  render() {
-    return (
-      <button 
-      className="square"
-      /* setState auto updates child components */
-      onClick={ () => this.props.onClick() }>
-        {this.props.value}
-      </button>
-    );
-  }
+/* 
+- class square refactored to function as its 
+state is now controlled by board class.
+- this keyword is also no longer required.
+*/
+function Square(props){
+  return (
+    <button 
+    className="square"
+    /* setState auto updates child components */
+    onClick={ () => props.onClick() }>
+      {props.value}
+    </button>
+  );
 }
 
 class Board extends React.Component {
@@ -28,8 +31,13 @@ class Board extends React.Component {
   }
 
   handleClick(i){
-    
+
     /* slice creates a copy of state squares */
+    /* changes through immutable object
+      - less complexity
+      - easy to detect changes 
+      - allows react to determine when to re-render
+    */
     const squares = this.state.squares.slice();
     squares[i] = 'X';
     this.setState({squares: squares});
