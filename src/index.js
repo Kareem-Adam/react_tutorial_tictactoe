@@ -40,11 +40,16 @@ class Board extends React.Component {
       - allows react to determine when to re-render
     */
     const squares = this.state.squares.slice();
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
-    this.setState({
-      squares: squares,
-      xIsNext: !this.state.xIsNext,
-    });
+    /* if game has not been won or square empty */
+    if(!(calculateWinner(squares) || squares[i])){
+      squares[i] = this.state.xIsNext ? 'X' : 'O';
+      this.setState({
+        squares: squares,
+        xIsNext: !this.state.xIsNext,
+      });
+    }else {
+      return;
+    }
   }
 
   renderSquare(i) {
@@ -65,9 +70,6 @@ class Board extends React.Component {
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O')
     };
-
-
-    const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     return (
       <div>
