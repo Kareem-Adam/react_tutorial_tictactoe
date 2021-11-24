@@ -21,59 +21,19 @@ function Square(props) {
 
 class Board extends React.Component {
 
-  /* init local state */
-  constructor(props) {
-    /* super assigns constructor props to 'this' keyword */
-    super(props); //superclass inheritance
-    this.state = {
-      squares: Array(9).fill(null),
-      xIsNext: true,
-    };
-  }
-
-  handleClick(i) {
-
-    /* slice creates a copy of state squares */
-    /* changes through immutable object
-      - less complexity
-      - easy to detect changes 
-      - allows react to determine when to re-render
-    */
-    const squares = this.state.squares.slice();
-    /* if game has not been won or square empty */
-    if(!(calculateWinner(squares) || squares[i])){
-      squares[i] = this.state.xIsNext ? 'X' : 'O';
-      this.setState({
-        squares: squares,
-        xIsNext: !this.state.xIsNext,
-      });
-    }else {
-      return;
-    }
-  }
-
   renderSquare(i) {
     return (
       <Square
-        value={this.state.squares[i]}
+        value={this.props.squares[i]}
         /* click event listener */
-        onClick={() => this.handleClick(i)}
+        onClick={() => this.props.onClick(i)}
       />);
   }
 
   render() {
 
-    const winner = calculateWinner(this.state.squares);
-    let status;
-    if (winner) {
-      status = 'Winner: ' + winner;
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O')
-    };
-
     return (
       <div>
-        <div className="status">{status}</div>
         <div className="board-row">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
@@ -95,27 +55,64 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
+  /* init local state */
+  constructor(props) {
+    /* super assigns constructor props to 'this' keyword */
+    super(props); //superclass inheritance
+    this.state = {
+      history: [{ squares: Array(9).fill(null), }],
+      xIsNext: true,
+    }
+  }
+
+  handleClick(i) {
+
+    /* slice creates a copy of state squares */
+    /* changes through immutable object
+      - less complexity
+      - easy to detect changes 
+      - allows react to determine when to re-render
+    */
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
+    /* if game has not been won or square empty */
+    if (!(calculateWinner(squares) || squares[i])) {
+      squares[i] = this.state.xIsNext ? 'X' : 'O';
+      this.setState({
+        /* concats joins current array to history */
+        history: history.concat([{ squares: squares, }]),
+        xIsNext: !this.state.xIsNext,
+      });
+    } else {
+      return;
+    }
+  }
   render() {
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const winner = calculateWinner(current.squares);
+    let status;
+
+    if (winner) { status = 'Winner: ' + winner; }
+    else { status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O'); }
+
     return (
       <div className="game">
         <div className="game-board">
-          <Board />
+          <Board 
+          squares = {current.squares}
+          onClick={(i) => this.handleClick(i)}
+          />
         </div>
         <div className="game-info">
-          <div>{/* status */}</div>
+          <div>{status}</div>
           <ol>{/* TODO */}</ol>
         </div>
       </div>
     );
   }
 }
-
-// ========================================
-
-ReactDOM.render(
-  <Game />,
-  document.getElementById('root')
-);
 
 function calculateWinner(squares) {
 
@@ -143,3 +140,10 @@ function calculateWinner(squares) {
   }
   return null;
 }
+
+// ========================================
+
+ReactDOM.render(
+  <Game />,
+  document.getElementById('root')
+);
