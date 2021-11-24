@@ -9,7 +9,7 @@ class Square extends React.Component {
       <button 
       className="square"
       /* setState auto updates child components */
-      onClick={ () => this.props.onClick }>
+      onClick={ () => this.props.onClick() }>
         {this.props.value}
       </button>
     );
@@ -28,8 +28,7 @@ class Board extends React.Component {
   }
 
   handleClick(i){
-
-    console.log('click');
+    
     /* slice creates a copy of state squares */
     const squares = this.state.squares.slice();
     squares[i] = 'X';
