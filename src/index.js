@@ -27,10 +27,22 @@ class Board extends React.Component {
     };
   }
 
+  handleClick(i){
+
+    console.log('click');
+    /* slice creates a copy of state squares */
+    const squares = this.state.squares.slice();
+    squares[i] = 'X';
+    this.setState({squares: squares});
+  }
+
   renderSquare(i) {
-    return (<Square 
+    return (
+    <Square 
       value={this.state.squares[i]}
-      onClick={()=> this.handleClick(i)} />);
+      /* click event listener */
+      onClick={()=> this.handleClick(i)} 
+      />);
   }
 
   render() {
