@@ -13,7 +13,7 @@ function Square(props){
     <button 
     className="square"
     /* setState auto updates child components */
-    onClick={ () => props.onClick() }>
+    onClick={props.onClick()}>
       {props.value}
     </button>
   );
