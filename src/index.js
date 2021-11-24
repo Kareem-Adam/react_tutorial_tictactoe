@@ -3,6 +3,15 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 class Square extends React.Component {
+
+  /* init local state */
+  constructor(props){
+    /* super assigns constructor props to 'this' keyword */
+    super(props); //superclass inheritance
+    this.state = {
+      value: null,
+    };
+  }
   render() {
     return (
       <button className="square" onClick={ () => console.log('click') }>
